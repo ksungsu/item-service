@@ -9,3 +9,4 @@
 * 타임리프 상세 문법
 * @PathVariable
 * Model(addAttribute)
+* @ModelAttribute
