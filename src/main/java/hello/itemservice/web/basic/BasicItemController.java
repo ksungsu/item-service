@@ -5,10 +5,7 @@ import hello.itemservice.domain.item.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -52,10 +49,56 @@ public class BasicItemController {
 
     /**
      * 상품 등록
+     * 쿼리 파라미터 방식, @RequestParam
      */
+
+//    @PostMapping("/add")
+    public String addItemV1(@RequestParam String itemName,
+                       @RequestParam int price,
+                       @RequestParam Integer quantity,
+                       Model model){
+        Item item = new Item(itemName, price, quantity);
+
+        itemRepository.save(item);
+
+        //model 속성을 추가해서 html view템플릿에 item 값으로 치환하여 화면에 출력해준다.
+        model.addAttribute("item", item);
+
+        return "basic/item";
+    }
+
+    /**
+     * @ModelAttribute를 이용한 item 객체 생성
+     * set
+     * model 속성 자동 생성 @ModelAttribute("item")
+     */
+
+//    @PostMapping("/add")
+    public String addItemV2(@ModelAttribute("item") Item item){
+
+        itemRepository.save(item);
+//        model.addAttribute("item", item);
+
+        return "basic/item";
+    }
+
+
+//    @PostMapping("/add")
+    public String addItemV3(@ModelAttribute Item item){
+
+        //클래스 Item -> item 이름으로(자동으로 소문자화) model 속성을 자동으로 넣어준다
+
+        itemRepository.save(item);
+//        model.addAttribute("item", item);
+
+        return "basic/item";
+    }
+
     @PostMapping("/add")
-    public String save(){
-        return "basic/addForm";
+    public String addItemV4(Item item){ //@ModelAttribute 생략
+        //클래스 Item -> item 이름으로(자동으로 소문자화) model 속성을 자동으로 넣어준다
+        itemRepository.save(item);
+        return "basic/item";
     }
 
 
