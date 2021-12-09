@@ -10,3 +10,7 @@
 * @PathVariable
 * Model(addAttribute)
 * @ModelAttribute
+
+## TIL 47th day
+* redirect(Post-> Get)
+ 
