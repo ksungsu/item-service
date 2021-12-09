@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -94,11 +95,54 @@ public class BasicItemController {
         return "basic/item";
     }
 
-    @PostMapping("/add")
+//    @PostMapping("/add")
     public String addItemV4(Item item){ //@ModelAttribute 생략
         //클래스 Item -> item 이름으로(자동으로 소문자화) model 속성을 자동으로 넣어준다
         itemRepository.save(item);
         return "basic/item";
+    }
+
+//    @PostMapping("/add")
+    public String addItemV5(Item item){ //@ModelAttribute 생략
+        //클래스 Item -> item 이름으로(자동으로 소문자화) model 속성을 자동으로 넣어준다
+        itemRepository.save(item);
+
+        //URL 인코딩이 안되므로 RedirectAttributes를 사용해야한다.
+        return "redirect:/basic/items/"+item.getId();
+    }
+
+
+    @PostMapping("/add")
+    public String addItemV6(Item item, RedirectAttributes redirectAttributes){
+        Item savedItem = itemRepository.save(item);
+
+        //redirectAttributes로 생성된 itemId가 return {itemId}로 치환된다.
+        redirectAttributes.addAttribute("itemId", savedItem.getId());
+        //등록 완료 text 추가하기 위해 선언
+        redirectAttributes.addAttribute("status", true);
+        //URL 인코딩이 안되므로 RedirectAttributes를 사용해야한다.
+        return "redirect:/basic/items/{itemId}";
+    }
+
+
+    /**
+     * 상품 수정 form
+     */
+    @GetMapping("/{itemId}/edit")
+    public String editForm(@PathVariable Long itemId, Model model){
+        Item item = itemRepository.findById(itemId);
+        model.addAttribute("item", item);
+        return "basic/editForm";
+    }
+
+    /**
+     * 상품 수정 post
+     * redirect
+     */
+    @PostMapping("/{itemId}/edit")
+    public String edit(@PathVariable Long itemId, @ModelAttribute Item item){
+        itemRepository.update(itemId, item);
+        return "redirect:/basic/items/{itemId}";
     }
 
 
