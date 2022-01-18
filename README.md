@@ -13,4 +13,5 @@
 
 ## TIL 47th day
 * redirect(Post-> Get)
+* postMappimng
  
